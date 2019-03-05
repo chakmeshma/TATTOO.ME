@@ -2,6 +2,7 @@
 
 namespace View
 {
+    [RequireComponent(typeof(BoxCollider2D))]
     public class Clickable : MonoBehaviour
     {
         private void OnMouseExit()
