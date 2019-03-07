@@ -8,12 +8,11 @@ namespace View
         private void OnMouseExit()
         {
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-
         }
 
         private void OnMouseEnter()
         {
-            Cursor.SetCursor(SharedViewResources.instance.clickableCursorTexture, new Vector2(28f, 5f), CursorMode.Auto);
+            Cursor.SetCursor(SharedViewResources.instance.clickableCursorTexture, new Vector2(14f, 2.5f), CursorMode.Auto);
         }
     }
 }
