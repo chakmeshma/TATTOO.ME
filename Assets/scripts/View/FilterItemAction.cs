@@ -1,36 +1,39 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class FilterItemAction : MonoBehaviour
+namespace View
 {
-    private Image thisImage;
-    private Text thisText;
-    private bool selected = false;
-
-    private void Awake()
+    public class FilterItemAction : MonoBehaviour
     {
-        thisImage = GetComponentInChildren<Image>();
-        thisText = GetComponentInChildren<Text>();
-    }
+        private Image thisImage;
+        private Text thisText;
+        private bool selected = false;
 
-    private void OnMouseDown()
-    {
-        selected = !selected;
-
-        updateView();
-    }
-
-    private void updateView()
-    {
-        if(selected)
+        private void Awake()
         {
-            thisImage.color = Color.black;
-            thisText.color = Color.white;
+            thisImage = GetComponentInChildren<Image>();
+            thisText = GetComponentInChildren<Text>();
         }
-        else
+
+        private void OnMouseDown()
         {
-            thisImage.color = Color.white;
-            thisText.color = Color.black;
+            selected = !selected;
+
+            updateView();
+        }
+
+        private void updateView()
+        {
+            if (selected)
+            {
+                thisImage.color = Color.black;
+                thisText.color = Color.white;
+            }
+            else
+            {
+                thisImage.color = Color.white;
+                thisText.color = Color.black;
+            }
         }
     }
 }

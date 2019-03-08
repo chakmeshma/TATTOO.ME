@@ -11,9 +11,11 @@ TrueTypeFontImporter:
   fontName: Minion Pro
   fontNames:
   - Minion Pro
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 4eaffaf91ff7bfc4d92bc935a1772941, type: 3}
+  - {fileID: 12800000, guid: 7ab3ad0ea9ace4942960ee13d20c63da, type: 3}
   customCharacters: 
-  fontRenderingMode: 0
+  fontRenderingMode: 3
   ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
   shouldRoundAdvanceValue: 1

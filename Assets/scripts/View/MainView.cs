@@ -1,9 +1,23 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace View
 {
+    public struct LibraryItem
+    {
+        public float price;
+        public string name;
+        public string seller;
+        public string sellerInitials;
+        public int followers;
+        public int likes;
+        public string location;
+        public Sprite shape;
+    }
+
     public class MainView : MonoBehaviour
     {
+        public RectTransform libraryContent;
         public static MainView instance = null;
         public enum UIPage
         {
@@ -62,6 +76,14 @@ namespace View
         public void onLibrarySelected()
         {
             page = UIPage.Library;
+        }
+
+        public void populate(List<LibraryItem> items, bool append)
+        {
+            if(!append)
+            {
+
+            }
         }
     }
 }
