@@ -11,8 +11,9 @@ namespace View
             Library
         }
         private UIPage _page = UIPage.MainMenu;
-        public GameObject[] mainMenuElements;
-        public GameObject[] libraryElements;
+        public GameObject topBar;
+        public GameObject mainMenu;
+        public GameObject library;
 
         public UIPage page
         {
@@ -32,16 +33,10 @@ namespace View
                     switch (_page)
                     {
                         case UIPage.MainMenu:
-                            foreach(GameObject go in mainMenuElements)
-                            {
-                                go.SetActive(true);
-                            }
+                            mainMenu.SetActive(true);
                             break;
                         case UIPage.Library:
-                            foreach (GameObject go in libraryElements)
-                            {
-                                go.SetActive(true);
-                            }
+                            library.SetActive(true);
                             break;
                     }
 
@@ -52,10 +47,8 @@ namespace View
 
         private void disableAll()
         {
-            for (int i = 0; i < transform.childCount; ++i)
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-            }
+            mainMenu.SetActive(false);
+            library.SetActive(false);
         }
 
         private void Awake()
