@@ -12,12 +12,11 @@ namespace View
         public int followers;
         public int likes;
         public string location;
-        public Sprite shape;
+        public string pictureURL;
     }
 
     public class MainView : MonoBehaviour
     {
-        public RectTransform libraryContent;
         public static MainView instance = null;
         public enum UIPage
         {
@@ -28,6 +27,7 @@ namespace View
         public GameObject topBar;
         public GameObject mainMenu;
         public GameObject library;
+        private ItemPopulation libraryContent;
 
         public UIPage page
         {
@@ -42,7 +42,7 @@ namespace View
                 {
                     _page = value;
 
-                    disableAll();
+                    disableAllPages();
 
                     switch (_page)
                     {
@@ -59,7 +59,7 @@ namespace View
             }
         }
 
-        private void disableAll()
+        private void disableAllPages()
         {
             mainMenu.SetActive(false);
             library.SetActive(false);
@@ -71,6 +71,8 @@ namespace View
             {
                 instance = this;
             }
+
+            libraryContent = library.GetComponentInChildren<ItemPopulation>();
         }
 
         public void onLibrarySelected()
@@ -78,12 +80,9 @@ namespace View
             page = UIPage.Library;
         }
 
-        public void populate(List<LibraryItem> items, bool append)
+        public void populateLibrary(List<LibraryItem> items, bool append)
         {
-            if(!append)
-            {
-
-            }
+            libraryContent.populate(items, append, ItemPopulation.PopulationMode.Grid);
         }
     }
 }
