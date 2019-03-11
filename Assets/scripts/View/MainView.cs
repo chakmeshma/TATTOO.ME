@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace View
@@ -23,11 +25,13 @@ namespace View
             MainMenu,
             Library
         }
-        private UIPage _page = UIPage.MainMenu;
         public GameObject topBar;
         public GameObject mainMenu;
         public GameObject library;
-        private ItemPopulation libraryContent;
+        public ItemPopulation libraryContent;
+        private UIPage _page = UIPage.MainMenu;
+        private RectTransform rectTransform;
+        private List<LibraryItem> lastLibraryItems = null;
 
         public UIPage page
         {
@@ -72,7 +76,7 @@ namespace View
                 instance = this;
             }
 
-            libraryContent = library.GetComponentInChildren<ItemPopulation>();
+            rectTransform = GetComponent<RectTransform>();
         }
 
         public void onLibrarySelected()
@@ -82,7 +86,67 @@ namespace View
 
         public void populateLibrary(List<LibraryItem> items, bool append)
         {
-            libraryContent.populate(items, append, ItemPopulation.PopulationMode.Grid);
+            libraryContent.populate<LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid, false);
+
+            lastLibraryItems = items;
+        }
+
+        private void transformLibraryPopulation(List<LibraryItem> items, bool append)
+        {
+            libraryContent.transformPopulation<LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid);
+        }
+
+        private void Start()
+        {
+            StopAllCoroutines();
+            StartCoroutine(resizeWatch());
+        }
+
+        void onResize()
+        {
+            switch (page)
+            {
+                case UIPage.Library:
+                    if (lastLibraryItems != null)
+                    {
+                        transformLibraryPopulation(lastLibraryItems, false);
+                    }
+                    break;
+            }
+        }
+
+
+
+        IEnumerator resizeWatch()
+        {
+            float lastWidth = rectTransform.rect.width * rectTransform.localScale.x;
+            float lastHeight = rectTransform.rect.height * rectTransform.localScale.y;
+
+            bool resize = false;
+            float since = Time.realtimeSinceStartup;
+
+            while (true)
+            {
+                float currentWidth = rectTransform.rect.width * rectTransform.localScale.x;
+                float currentHeight = rectTransform.rect.height * rectTransform.localScale.y;
+
+                if (currentWidth != lastWidth || currentHeight != lastHeight)
+                {
+                    resize = true;
+                    since = Time.realtimeSinceStartup;
+                }
+
+                lastWidth = currentWidth;
+                lastHeight = currentHeight;
+
+                if (resize && Time.realtimeSinceStartup - since >= 0.1f)
+                {
+                    resize = false;
+                    onResize();
+                }
+
+                yield return new WaitForSecondsRealtime(0.4f);
+            }
         }
     }
 }

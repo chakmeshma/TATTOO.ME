@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace View
 {
@@ -12,14 +13,14 @@ namespace View
             Grid,
             Stack
         }
-        private int nColumns = 0;
+        public float verticalPadding;
+        public float horizontalPadding;
         public RectTransform body;
-        public UnityEngine.Object libraryItem;
+        public Object item;
+        private int nColumns = 0;
         private float itemWidth;
         private float itemHeight;
         private float contentWidth;
-        public float verticalPadding;
-        public float horizontalPadding;
         private RectTransform rectTransform;
 
         private void Awake()
@@ -35,27 +36,45 @@ namespace View
             }
         }
 
-        public void populate(List<LibraryItem> items, bool append, PopulationMode populationMode)
+        public void contentReset()
+        {
+            clearAll();
+            nColumns = 0;
+        }
+
+        public void transformPopulation<T>(List<T> items, bool append, PopulationMode populationMode)
+        {
+            nColumns = 0;
+            populate<T>(items, append, populationMode, true);
+        }
+
+        public void populate<T>(List<T> items, bool append, PopulationMode populationMode, bool resize)
         {
             switch (populationMode)
             {
                 case PopulationMode.Grid:
+
                     if (items.Count == 0)
                     {
                         return;
                     }
+
                     if (append)
                     {
 
                     }
                     else
                     {
-                        clearAll();
+
+                        if (!resize)
+                        {
+                            clearAll();
+                        }
 
                         if (nColumns == 0)
                         {
                             StopAllCoroutines();
-                            StartCoroutine(calculatenColumns(items, append, PopulationMode.Grid));
+                            StartCoroutine(calculatenColumns<T>(items, append, PopulationMode.Grid));
 
                             return;
                         }
@@ -69,16 +88,32 @@ namespace View
                             }
 
                             int index = -1;
-
+                            int k = 0;
                             for (int i = 0; i < nRows; ++i)
                             {
                                 for (int j = 0; j < nColumns && (index = (i * nColumns + j)) < items.Count; ++j)
                                 {
-                                    GameObject go = Instantiate(libraryItem, transform) as GameObject;
+                                    GameObject go = null;
 
-                                    float remainderPadding = (contentWidth - (((nColumns - 1) * verticalPadding) + (nColumns * itemWidth))) / 2.0f;
+                                    if (resize)
+                                    {
+                                        go = transform.GetChild(k).gameObject;
 
-                                    go.GetComponent<RectTransform>().anchoredPosition = new Vector2(j * (itemWidth + horizontalPadding) + remainderPadding, -i * (itemHeight + verticalPadding) - verticalPadding);
+                                        ++k;
+                                    }
+                                    else
+                                    {
+                                        go = Instantiate(item, transform) as GameObject;
+                                    }
+
+                                    //float remainderPadding = (contentWidth - (((nColumns - 1) * verticalPadding) + (nColumns * itemWidth))) / 2.0f;
+
+                                    //go.GetComponent<RectTransform>().anchoredPosition = new Vector2(j * (itemWidth + horizontalPadding) + remainderPadding, -i * (itemHeight + verticalPadding) - verticalPadding);
+
+                                    float emptySpace = contentWidth - nColumns * itemWidth;
+                                    float padding = emptySpace / (nColumns + 1);
+
+                                    go.GetComponent<RectTransform>().anchoredPosition = new Vector2(padding * (j + 1) + itemWidth * j, -i * (itemHeight + verticalPadding) - verticalPadding);
 
                                 }
                             }
@@ -92,21 +127,21 @@ namespace View
 
         }
 
-        private IEnumerator calculatenColumns(List<LibraryItem> items, bool append, PopulationMode populationMode)
+        private IEnumerator calculatenColumns<T>(List<T> items, bool append, PopulationMode populationMode)
         {
             yield return new WaitForEndOfFrame();
 
-            GameObject probeItem = Instantiate(libraryItem, transform) as GameObject;
+            GameObject probeItem = Instantiate(item, transform) as GameObject;
 
             itemWidth = probeItem.GetComponent<RectTransform>().rect.width;
             itemHeight = probeItem.GetComponent<RectTransform>().rect.height;
-            contentWidth = body.GetComponent<RectTransform>().rect.width;
+            contentWidth = body.GetComponent<RectTransform>().rect.width - 20;
 
             Destroy(probeItem);
 
             nColumns = Mathf.FloorToInt(contentWidth / itemWidth);
 
-            populate(items, append, populationMode);
+            populate<T>(items, append, populationMode, false);
         }
     }
 }
