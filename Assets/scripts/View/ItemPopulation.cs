@@ -42,7 +42,7 @@ namespace View
             nColumns = 0;
         }
 
-        public void transformPopulation<T>(List<T> items, bool append, PopulationMode populationMode)
+        public void repositionPopulation<T>(List<T> items, bool append, PopulationMode populationMode)
         {
             nColumns = 0;
             populate<T>(items, append, populationMode, true);
@@ -77,7 +77,7 @@ namespace View
 
                             itemWidth = probeItem.GetComponent<RectTransform>().rect.width;
                             itemHeight = probeItem.GetComponent<RectTransform>().rect.height;
-                            contentWidth = body.GetComponent<RectTransform>().rect.width - 20;
+                            contentWidth = body.GetComponent<RectTransform>().rect.width;
 
                             Destroy(probeItem);
 
