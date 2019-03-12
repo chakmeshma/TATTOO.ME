@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,6 +21,7 @@ namespace View
         private float itemHeight;
         private float contentWidth;
         private RectTransform rectTransform;
+        private List<GameObject> lastAddedGameObjects = new List<GameObject>();
 
         private void Awake()
         {
@@ -48,7 +48,7 @@ namespace View
             populate<T>(items, append, populationMode, true);
         }
 
-        public void populate<T>(List<T> items, bool append, PopulationMode populationMode, bool resize)
+        public List<GameObject> populate<T>(List<T> items, bool append, PopulationMode populationMode, bool resize)
         {
             switch (populationMode)
             {
@@ -56,7 +56,7 @@ namespace View
 
                     if (items.Count == 0)
                     {
-                        return;
+                        return null;
                     }
 
                     if (append)
@@ -73,10 +73,17 @@ namespace View
 
                         if (nColumns == 0)
                         {
-                            StopAllCoroutines();
-                            StartCoroutine(calculatenColumns<T>(items, append, PopulationMode.Grid));
+                            GameObject probeItem = Instantiate(item, transform) as GameObject;
 
-                            return;
+                            itemWidth = probeItem.GetComponent<RectTransform>().rect.width;
+                            itemHeight = probeItem.GetComponent<RectTransform>().rect.height;
+                            contentWidth = body.GetComponent<RectTransform>().rect.width - 20;
+
+                            Destroy(probeItem);
+
+                            nColumns = Mathf.FloorToInt(contentWidth / itemWidth);
+
+                            return populate<T>(items, append, populationMode, resize);
                         }
                         else
                         {
@@ -104,6 +111,8 @@ namespace View
                                     else
                                     {
                                         go = Instantiate(item, transform) as GameObject;
+
+                                        lastAddedGameObjects.Add(go);
                                     }
 
                                     //float remainderPadding = (contentWidth - (((nColumns - 1) * verticalPadding) + (nColumns * itemWidth))) / 2.0f;
@@ -122,26 +131,11 @@ namespace View
                         }
 
                     }
-                    break;
+                    return lastAddedGameObjects;
             }
 
-        }
+            return null;
 
-        private IEnumerator calculatenColumns<T>(List<T> items, bool append, PopulationMode populationMode)
-        {
-            yield return new WaitForEndOfFrame();
-
-            GameObject probeItem = Instantiate(item, transform) as GameObject;
-
-            itemWidth = probeItem.GetComponent<RectTransform>().rect.width;
-            itemHeight = probeItem.GetComponent<RectTransform>().rect.height;
-            contentWidth = body.GetComponent<RectTransform>().rect.width - 20;
-
-            Destroy(probeItem);
-
-            nColumns = Mathf.FloorToInt(contentWidth / itemWidth);
-
-            populate<T>(items, append, populationMode, false);
         }
     }
 }

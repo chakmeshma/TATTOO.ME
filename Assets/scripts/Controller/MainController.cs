@@ -13,7 +13,11 @@ namespace Controller
 
                 for (int i = 0; i < 10; ++i)
                 {
-                    items.Add(new View.LibraryItem());
+                    View.LibraryItem info = new View.LibraryItem();
+
+                    info.name = " " + Random.Range(1000, 900000000000).ToString();
+
+                    items.Add(info);
                 }
 
                 View.MainView.instance.populateLibrary(items, false);

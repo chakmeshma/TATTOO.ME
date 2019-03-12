@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,9 +85,15 @@ namespace View
 
         public void populateLibrary(List<LibraryItem> items, bool append)
         {
-            libraryContent.populate<LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid, false);
+            List<GameObject> addedGameObjects = libraryContent.populate<LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid, false);
 
             lastLibraryItems = items;
+
+            for (int i = 0; i < addedGameObjects.Count; ++i)
+            {
+                addedGameObjects[i].GetComponent<LibraryItemView>().info = items[i];
+                addedGameObjects[i].GetComponent<LibraryItemView>().updateView();
+            }
         }
 
         private void transformLibraryPopulation(List<LibraryItem> items, bool append)
