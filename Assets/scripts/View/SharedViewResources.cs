@@ -10,6 +10,7 @@ namespace View
         public Texture2D clickableCursorTexture;
         public Sprite likeHeartEmptySprite;
         public Sprite likeHeartFullSprite;
+        public Texture2D webRequestErrorTexture;
 
         private void Awake()
         {

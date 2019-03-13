@@ -4,18 +4,6 @@ using UnityEngine;
 
 namespace View
 {
-    public struct LibraryItem
-    {
-        public float price;
-        public string name;
-        public string seller;
-        public string sellerInitials;
-        public int followers;
-        public int likes;
-        public string location;
-        public string pictureURL;
-    }
-
     public class MainView : MonoBehaviour
     {
         public static MainView instance = null;
@@ -30,7 +18,7 @@ namespace View
         public ItemPopulation libraryContent;
         private UIPage _page = UIPage.MainMenu;
         private RectTransform rectTransform;
-        private List<LibraryItem> lastLibraryItems = null;
+        private List<Controller.MainController.LibraryItem> lastLibraryItems = null;
         private List<GameObject> lastAddedGameObjects = null;
 
         public UIPage page
@@ -84,9 +72,9 @@ namespace View
             page = UIPage.Library;
         }
 
-        public void populateLibrary(List<LibraryItem> items, bool append)
+        public void populateLibrary(List<Controller.MainController.LibraryItem> items, bool append)
         {
-            lastAddedGameObjects = libraryContent.populate<LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid, false);
+            lastAddedGameObjects = libraryContent.populate<Controller.MainController.LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid, false);
 
             lastLibraryItems = items;
 
@@ -99,9 +87,9 @@ namespace View
             }
         }
 
-        private void repositionLibraryPopulation(List<LibraryItem> items, bool append)
+        private void repositionLibraryPopulation(List<Controller.MainController.LibraryItem> items, bool append)
         {
-            libraryContent.repositionPopulation<LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid);
+            libraryContent.repositionPopulation<Controller.MainController.LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid);
         }
 
         private void Start()

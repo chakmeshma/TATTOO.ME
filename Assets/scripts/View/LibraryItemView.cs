@@ -4,7 +4,7 @@ namespace View
 {
     public class LibraryItemView : MonoBehaviour
     {
-        public LibraryItem info;
+        public Controller.MainController.LibraryItem info;
         public UnityEngine.UI.Text nameText;
         public UnityEngine.UI.Text priceText;
         public UnityEngine.UI.Text artistText;
