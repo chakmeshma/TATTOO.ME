@@ -10090,7 +10090,8 @@ MonoBehaviour:
   verticalPadding: 30
   horizontalPadding: 30
   body: {fileID: 1891737441}
-  item: {fileID: 1410342738500928096, guid: 0df416c602e414047ba9f73c3790a8e8, type: 3}
+  itemPrefab: {fileID: 1410342738500928096, guid: 0df416c602e414047ba9f73c3790a8e8,
+    type: 3}
 --- !u!114 &1891737443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12449,7 +12450,7 @@ PrefabInstance:
     - target: {fileID: 6616885623843967075, guid: 48ee2fa7139cdec42888dd3aab69d088,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -120.99988
+      value: -121
       objectReference: {fileID: 0}
     - target: {fileID: 6616885623843967075, guid: 48ee2fa7139cdec42888dd3aab69d088,
         type: 3}

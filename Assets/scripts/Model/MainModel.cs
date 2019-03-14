@@ -31,7 +31,7 @@ namespace Model
                 info.price = 123.55f;
                 info.seller = "Majid Motallebikashani";
                 info.sellerInitials = "MM";
-                info.pictureURL = "http://localhost/pics/852504" + Random.Range(31, 70).ToString() + ".jpg";
+                info.pictureURL = "http://localhost/Tattoos/" + Random.Range(1, 15).ToString() + ".png";
 
                 items.Add(info);
             }

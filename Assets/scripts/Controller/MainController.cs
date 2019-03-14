@@ -35,7 +35,7 @@ namespace Controller
 
                 Model.MainModel.instance.getLibraryItems(items);
 
-                View.MainView.instance.populateLibrary(items, false);
+                View.MainView.instance.populateLibrary(items);
             }
         }
 
@@ -48,11 +48,11 @@ namespace Controller
         {
             if (image)
             {
-                View.MainView.instance.updateLibraryItemTexture(image, i);
+                View.MainView.instance.libraryItemTextureReady(image, i);
             }
             else
             {
-                View.MainView.instance.updateLibraryItemTexture(View.SharedViewResources.instance.webRequestErrorTexture, i);
+                View.MainView.instance.libraryItemTextureReady(View.SharedViewResources.instance.webRequestErrorTexture, i);
             }
         }
     }

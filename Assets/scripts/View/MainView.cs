@@ -18,8 +18,9 @@ namespace View
         public ItemPopulation libraryContent;
         private UIPage _page = UIPage.MainMenu;
         private RectTransform rectTransform;
-        private List<Controller.MainController.LibraryItem> lastLibraryItems = null;
-        private List<GameObject> lastAddedGameObjects = null;
+        private List<Controller.MainController.LibraryItem> libraryLastItems = null;
+        private List<GameObject> libraryLastAddedGameObjects = null;
+        private int libraryNumberTextured = 0;
 
         public UIPage page
         {
@@ -72,24 +73,24 @@ namespace View
             page = UIPage.Library;
         }
 
-        public void populateLibrary(List<Controller.MainController.LibraryItem> items, bool append)
+        public void populateLibrary(List<Controller.MainController.LibraryItem> items)
         {
-            lastAddedGameObjects = libraryContent.populate<Controller.MainController.LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid, false);
+            libraryLastAddedGameObjects = libraryContent.populate<Controller.MainController.LibraryItem>(items, ItemPopulation.PopulationMode.Grid, false);
 
-            lastLibraryItems = items;
+            libraryLastItems = items;
 
-            for (int i = 0; i < lastAddedGameObjects.Count; ++i)
+            for (int i = 0; i < libraryLastAddedGameObjects.Count; ++i)
             {
-                lastAddedGameObjects[i].GetComponent<LibraryItemView>().info = items[i];
-                lastAddedGameObjects[i].GetComponent<LibraryItemView>().updateView();
+                libraryLastAddedGameObjects[i].GetComponent<LibraryItemView>().info = items[i];
+                libraryLastAddedGameObjects[i].GetComponent<LibraryItemView>().updateView();
 
-                Controller.MainController.instance.onLibraryItemLoaded(lastLibraryItems, i);
+                Controller.MainController.instance.onLibraryItemLoaded(libraryLastItems, i);
             }
         }
 
-        private void repositionLibraryPopulation(List<Controller.MainController.LibraryItem> items, bool append)
+        private void repositionLibraryPopulation(List<Controller.MainController.LibraryItem> items)
         {
-            libraryContent.repositionPopulation<Controller.MainController.LibraryItem>(items, append, ItemPopulation.PopulationMode.Grid);
+            libraryContent.repositionPopulation<Controller.MainController.LibraryItem>(items, ItemPopulation.PopulationMode.Grid);
         }
 
         private void Start()
@@ -103,17 +104,24 @@ namespace View
             switch (page)
             {
                 case UIPage.Library:
-                    if (lastLibraryItems != null)
+                    if (libraryLastItems != null)
                     {
-                        repositionLibraryPopulation(lastLibraryItems, false);
+                        repositionLibraryPopulation(libraryLastItems);
                     }
                     break;
             }
         }
 
-        public void updateLibraryItemTexture(Texture2D picture, int i)
+        public void libraryItemTextureReady(Texture2D picture, int index)
         {
-            lastAddedGameObjects[i].GetComponent<LibraryItemView>().updatePicture(picture);
+            libraryLastAddedGameObjects[index].GetComponent<LibraryItemView>().updatePicture(picture);
+            libraryNumberTextured++;
+
+            if (libraryNumberTextured == libraryLastItems.Count)
+            {
+                libraryNumberTextured = 0;
+                onResize();
+            }
         }
 
         IEnumerator resizeWatch()
