@@ -21,7 +21,7 @@ namespace View
         private float itemHeight;
         private float contentWidth;
         private RectTransform rectTransform;
-        private List<GameObject> lastAddedGameObjects = new List<GameObject>();
+        public List<GameObject> lastAddedGameObjects = new List<GameObject>();
         private float[] accs = null;
         float accLargestDiff = 0.0f;
 
@@ -52,7 +52,7 @@ namespace View
 
         public List<GameObject> populate<T>(List<T> items, PopulationMode populationMode, bool resize)
         {
-            if (accs == null)
+            if (accs == null || accs.Length != items.Count)
             {
                 accs = new float[items.Count];
 
@@ -138,7 +138,7 @@ namespace View
                             }
                         }
 
-                        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, (nRows * (itemHeight + verticalPadding)) + 2 * verticalPadding + accLargestDiff);
+                        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, getContentHeight() + verticalPadding); /*(nRows * (itemHeight + verticalPadding)) + 2 * verticalPadding + accLargestDiff);*/
                     }
 
                     return lastAddedGameObjects;
@@ -146,6 +146,47 @@ namespace View
 
             return null;
 
+        }
+
+        public float getContentHeight()
+        {
+            float maxHeight = 0.0f;
+
+            for (int i = lastAddedGameObjects.Count - 1; i >= (lastAddedGameObjects.Count - nColumns); --i)
+            {
+                RectTransform rect = lastAddedGameObjects[i].GetComponent<RectTransform>();
+
+                if (rect.sizeDelta.y - rect.anchoredPosition.y > maxHeight)
+                {
+                    maxHeight = rect.sizeDelta.y - rect.anchoredPosition.y;
+                }
+            }
+
+            return maxHeight;
+        }
+
+        public List<GameObject> append<T>(List<T> items, PopulationMode populationMode)
+        {
+            List<GameObject> gameObjects = new List<GameObject>();
+
+            for (int i = 0; i < items.Count; ++i)
+            {
+                float emptySpace = contentWidth - nColumns * itemWidth;
+                float padding = emptySpace / (nColumns + 1);
+                int row = Mathf.CeilToInt((float)lastAddedGameObjects.Count / (float)nColumns) - 1;
+
+                GameObject newGameObject = Instantiate(itemPrefab, transform) as GameObject;
+
+                lastAddedGameObjects.Add(newGameObject);
+
+                newGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(padding, -getContentHeight() - verticalPadding);
+
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, getContentHeight() + verticalPadding + itemHeight); /*(nRows * (itemHeight + verticalPadding)) + 2 * verticalPadding + accLargestDiff);*/
+
+                gameObjects.Add(newGameObject);
+            }
+
+            return gameObjects;
         }
 
         public float addPositionAllAcc(bool clear)
@@ -173,7 +214,7 @@ namespace View
             return max;
         }
 
-        public float addPositionAcc(int index)
+        private float addPositionAcc(int index)
         {
             float max = 0;
 

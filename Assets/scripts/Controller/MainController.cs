@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Controller
 {
@@ -36,6 +35,15 @@ namespace Controller
                 Model.MainModel.instance.getLibraryItems(items);
 
                 View.MainView.instance.populateLibrary(items);
+            }
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                List<Controller.MainController.LibraryItem> newItems = new List<Controller.MainController.LibraryItem>();
+
+                Model.MainModel.instance.getNewLibraryItems(newItems);
+
+                View.MainView.instance.appendLibrary(newItems);
             }
         }
 

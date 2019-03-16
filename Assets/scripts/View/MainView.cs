@@ -19,7 +19,6 @@ namespace View
         private UIPage _page = UIPage.MainMenu;
         private RectTransform rectTransform;
         private List<Controller.MainController.LibraryItem> libraryLastItems = null;
-        private List<GameObject> libraryLastAddedGameObjects = null;
         private int libraryNumberTextured = 0;
 
         public UIPage page
@@ -73,16 +72,33 @@ namespace View
             page = UIPage.Library;
         }
 
+        public void appendLibrary(List<Controller.MainController.LibraryItem> newitems)
+        {
+            int newIndex = libraryContent.lastAddedGameObjects.Count;
+
+            libraryContent.append<Controller.MainController.LibraryItem>(newitems, ItemPopulation.PopulationMode.Grid);
+
+            libraryLastItems.AddRange(newitems);
+
+            for (int i = newIndex; i < libraryContent.lastAddedGameObjects.Count; ++i)
+            {
+                libraryContent.lastAddedGameObjects[i].GetComponent<LibraryItemView>().info = libraryLastItems[i];
+                libraryContent.lastAddedGameObjects[i].GetComponent<LibraryItemView>().updateView();
+
+                Controller.MainController.instance.onLibraryItemLoaded(libraryLastItems, i);
+            }
+        }
+
         public void populateLibrary(List<Controller.MainController.LibraryItem> items)
         {
-            libraryLastAddedGameObjects = libraryContent.populate<Controller.MainController.LibraryItem>(items, ItemPopulation.PopulationMode.Grid, false);
+            libraryContent.lastAddedGameObjects = libraryContent.populate<Controller.MainController.LibraryItem>(items, ItemPopulation.PopulationMode.Grid, false);
 
             libraryLastItems = items;
 
-            for (int i = 0; i < libraryLastAddedGameObjects.Count; ++i)
+            for (int i = 0; i < libraryContent.lastAddedGameObjects.Count; ++i)
             {
-                libraryLastAddedGameObjects[i].GetComponent<LibraryItemView>().info = items[i];
-                libraryLastAddedGameObjects[i].GetComponent<LibraryItemView>().updateView();
+                libraryContent.lastAddedGameObjects[i].GetComponent<LibraryItemView>().info = items[i];
+                libraryContent.lastAddedGameObjects[i].GetComponent<LibraryItemView>().updateView();
 
                 Controller.MainController.instance.onLibraryItemLoaded(libraryLastItems, i);
             }
@@ -114,12 +130,12 @@ namespace View
 
         public void libraryItemTextureReady(Texture2D picture, int index)
         {
-            libraryLastAddedGameObjects[index].GetComponent<LibraryItemView>().updatePicture(picture);
+            libraryContent.lastAddedGameObjects[index].GetComponent<LibraryItemView>().updatePicture(picture);
             libraryNumberTextured++;
 
             if (libraryNumberTextured == libraryLastItems.Count)
             {
-                libraryNumberTextured = 0;
+                //libraryNumberTextured = 0;
                 onResize();
             }
         }
