@@ -12,7 +12,6 @@ namespace View
             MainMenu,
             Library
         }
-        public GameObject topBar;
         public GameObject mainMenu;
         public GameObject library;
         public ItemPopulation libraryContent;
@@ -20,7 +19,6 @@ namespace View
         private RectTransform rectTransform;
         private List<Controller.MainController.LibraryItem> libraryLastItems = null;
         private int libraryNumberTextured = 0;
-
         public UIPage page
         {
             get
@@ -87,6 +85,8 @@ namespace View
 
                 Controller.MainController.instance.onLibraryItemLoaded(libraryLastItems, i);
             }
+
+            onResize();
         }
 
         public void populateLibrary(List<Controller.MainController.LibraryItem> items)
