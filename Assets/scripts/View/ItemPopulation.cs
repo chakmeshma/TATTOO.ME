@@ -16,18 +16,31 @@ namespace View
         public float horizontalPadding;
         public RectTransform body;
         public Object itemPrefab;
+        public List<GameObject> lastAddedGameObjects = new List<GameObject>();
+        public UnityEngine.UI.Scrollbar scrollBar;
+        public bool lastAppend;
         private int nColumns = 0;
         private float itemWidth;
         private float itemHeight;
         private float contentWidth;
         private RectTransform rectTransform;
-        public List<GameObject> lastAddedGameObjects = new List<GameObject>();
         private float[] accs = null;
-        float accLargestDiff = 0.0f;
+        private float accLargestDiff = 0.0f;
+        private bool initPopulated = false;
+
+        private void onScrolled(float value)
+        {
+            if (value <= 0.02f && !lastAppend && initPopulated)
+            {
+                Controller.MainController.instance.scrolledDown();
+            }
+        }
 
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
+
+            scrollBar.onValueChanged.AddListener(onScrolled);
         }
 
         private void clearAll()
@@ -140,6 +153,8 @@ namespace View
 
                         rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, getContentHeight() + verticalPadding); /*(nRows * (itemHeight + verticalPadding)) + 2 * verticalPadding + accLargestDiff);*/
                     }
+
+                    initPopulated = true;
 
                     return lastAddedGameObjects;
             }

@@ -26,25 +26,44 @@ namespace Controller
             }
         }
 
+
+        private void loadLibraryItems()
+        {
+            List<Controller.MainController.LibraryItem> items = new List<Controller.MainController.LibraryItem>();
+
+            Model.MainModel.instance.getLibraryItems(items);
+
+            View.MainView.instance.populateLibrary(items);
+        }
+
+        private void nextLoadLibraryItems()
+        {
+            List<Controller.MainController.LibraryItem> newItems = new List<Controller.MainController.LibraryItem>();
+
+            Model.MainModel.instance.getNewLibraryItems(newItems);
+
+            if (newItems.Count > 0)
+            {
+                View.MainView.instance.appendLibrary(newItems);
+            }
+        }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.P))
             {
-                List<Controller.MainController.LibraryItem> items = new List<Controller.MainController.LibraryItem>();
-
-                Model.MainModel.instance.getLibraryItems(items);
-
-                View.MainView.instance.populateLibrary(items);
+                loadLibraryItems();
             }
 
             if (Input.GetKeyDown(KeyCode.O))
             {
-                List<Controller.MainController.LibraryItem> newItems = new List<Controller.MainController.LibraryItem>();
-
-                Model.MainModel.instance.getNewLibraryItems(newItems);
-
-                View.MainView.instance.appendLibrary(newItems);
+                nextLoadLibraryItems();
             }
+        }
+
+        public void scrolledDown()
+        {
+            nextLoadLibraryItems();
         }
 
         public void onLibraryItemLoaded(List<Controller.MainController.LibraryItem> items, int i)

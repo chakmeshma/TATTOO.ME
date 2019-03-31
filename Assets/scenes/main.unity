@@ -119,11 +119,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2065125897}
     m_Modifications:
-    - target: {fileID: 2640272444535591055, guid: 7e95a2d03a22ffa438773e7284ca3750,
-        type: 3}
-      propertyPath: m_Name
-      value: Dropdown (1)
-      objectReference: {fileID: 0}
     - target: {fileID: 2640272444535591054, guid: 7e95a2d03a22ffa438773e7284ca3750,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -233,6 +228,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: BERLIN
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640272444535591055, guid: 7e95a2d03a22ffa438773e7284ca3750,
+        type: 3}
+      propertyPath: m_Name
+      value: Dropdown (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2640272444535591053, guid: 7e95a2d03a22ffa438773e7284ca3750,
         type: 3}
@@ -1029,11 +1029,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2065125897}
     m_Modifications:
-    - target: {fileID: 2640272444535591055, guid: 7e95a2d03a22ffa438773e7284ca3750,
-        type: 3}
-      propertyPath: m_Name
-      value: Dropdown
-      objectReference: {fileID: 0}
     - target: {fileID: 2640272444535591054, guid: 7e95a2d03a22ffa438773e7284ca3750,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1143,6 +1138,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: GERMANY
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640272444535591055, guid: 7e95a2d03a22ffa438773e7284ca3750,
+        type: 3}
+      propertyPath: m_Name
+      value: Dropdown
       objectReference: {fileID: 0}
     - target: {fileID: 2640272444535591053, guid: 7e95a2d03a22ffa438773e7284ca3750,
         type: 3}
@@ -8954,7 +8954,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf01a7a700ba594e9e2266f68be1c71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topBar: {fileID: 1146694707884097029}
   mainMenu: {fileID: 687293164}
   library: {fileID: 539911579}
   libraryContent: {fileID: 1891737442}
@@ -10092,6 +10091,9 @@ MonoBehaviour:
   body: {fileID: 1891737441}
   itemPrefab: {fileID: 1410342738500928096, guid: 0df416c602e414047ba9f73c3790a8e8,
     type: 3}
+  lastAddedGameObjects: []
+  scrollBar: {fileID: 1166981383}
+  lastAppend: 0
 --- !u!114 &1891737443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11326,12 +11328,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2082445994}
   m_CullTransparentMesh: 0
---- !u!1 &1146694707884097029 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1146694707884097029, guid: b6da4567eb8c337489c90123d6dc43e3,
-    type: 3}
-  m_PrefabInstance: {fileID: 1146694707971363743}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1146694707971363743
 PrefabInstance:
   m_ObjectHideFlags: 0

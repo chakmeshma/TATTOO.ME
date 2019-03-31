@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Controller;
 using System.Collections;
 using System.Collections.Generic;
-using Controller;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
@@ -54,6 +53,8 @@ namespace Model
 
                 items.Add(info);
             }
+
+            numLoadedSet++;
         }
 
         public void getTattooPicture(int index, string url)
@@ -61,22 +62,29 @@ namespace Model
             StartCoroutine(fetchTattooPicture(index, url));
         }
 
+        private int numLoadedSet = 0;
+
         public void getNewLibraryItems(List<MainController.LibraryItem> newItems)
         {
-            for (int i = 0; i < 10; ++i)
+            if (numLoadedSet <= 3)
             {
-                Controller.MainController.LibraryItem info = new Controller.MainController.LibraryItem();
+                for (int i = 0; i < 10; ++i)
+                {
+                    Controller.MainController.LibraryItem info = new Controller.MainController.LibraryItem();
 
-                info.name = " " + Random.Range(1000, 900000000000).ToString();
-                info.followers = 536;
-                info.likes = 350;
-                info.location = "Tehran, Iran";
-                info.price = 898.55f;
-                info.seller = "Shahrokh Shahinfar";
-                info.sellerInitials = "MM";
-                info.pictureURL = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Large_Scaled_Forest_Lizard.jpg";
+                    info.name = " " + Random.Range(1000, 900000000000).ToString();
+                    info.followers = 536;
+                    info.likes = 350;
+                    info.location = "Tehran, Iran";
+                    info.price = 898.55f;
+                    info.seller = "Shahrokh Shahinfar";
+                    info.sellerInitials = "MM";
+                    info.pictureURL = "https://static1.squarespace.com/static/55d770c0e4b0b0f70c93dab9/t/5615cb3ae4b0141a0f975cd7/1444268799934/unnamed-3.jpg?format=300w";
 
-                newItems.Add(info);
+                    newItems.Add(info);
+                }
+
+                numLoadedSet++;
             }
         }
 
