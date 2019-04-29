@@ -18,7 +18,6 @@ namespace View
         public Object itemPrefab;
         public List<GameObject> lastAddedGameObjects = new List<GameObject>();
         public UnityEngine.UI.Scrollbar scrollBar;
-        public bool lastAppend;
         private int nColumns = 0;
         private float itemWidth;
         private float itemHeight;
@@ -30,7 +29,7 @@ namespace View
 
         private void onScrolled(float value)
         {
-            if (value <= 0.02f && !lastAppend && initPopulated)
+            if (value <= 0.02f && initPopulated)
             {
                 Controller.MainController.instance.scrolledDown();
             }
@@ -100,6 +99,11 @@ namespace View
                         Destroy(probeItem);
 
                         nColumns = Mathf.FloorToInt(contentWidth / itemWidth);
+
+                        if (nColumns < 1)
+                        {
+                            nColumns = 1;
+                        }
 
                         accLargestDiff = addPositionAllAcc(true);
 
@@ -236,7 +240,9 @@ namespace View
             for (int i = index + nColumns; i < lastAddedGameObjects.Count; i += nColumns)
             {
                 float newHeight = lastAddedGameObjects[index].GetComponent<RectTransform>().rect.height;
+
                 accs[i] += newHeight - itemHeight;
+
 
                 if (accs[i] > max)
                 {

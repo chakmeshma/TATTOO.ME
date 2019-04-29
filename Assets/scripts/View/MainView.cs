@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Battlehub.UIControls.DockPanels;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
 
 namespace View
 {
     public class MainView : MonoBehaviour
     {
+        public DockPanel dockPanel;
         public static MainView instance = null;
         public enum UIPage
         {
@@ -16,59 +19,72 @@ namespace View
         public GameObject mainMenu;
         public GameObject library;
         public ItemPopulation libraryContent;
-        private UIPage _page = UIPage.MainMenu;
         private RectTransform rectTransform;
         private List<Controller.MainController.LibraryItem> libraryLastItems = null;
         private int libraryNumberTextured = 0;
-        public UIPage page
-        {
-            get
-            {
-                return _page;
-            }
+        private bool libraryInited = false;
+        private bool libraryEnabled = false;
+        private RegionEventHandler<Transform> lastLibraryCloseHandler = null;
 
-            set
+        private void closeHandler(Region region, Transform arg)
+        {
+            switch (arg.name)
             {
-                if (_page != value)
+                case "Library":
+                    libraryEnabled = false;
+                    libraryToggleAct();
+                    break;
+            }
+        }
+
+        private void libraryToggleAct()
+        {
+            if (libraryEnabled)
+            {
+                library.SetActive(true);
+
+                dockPanel.RootRegion.Add(null, "Library", library.transform);
+
+                if (lastLibraryCloseHandler != null)
                 {
-                    _page = value;
-
-                    disableAllPages();
-
-                    switch (_page)
-                    {
-                        case UIPage.MainMenu:
-                            mainMenu.SetActive(true);
-                            break;
-                        case UIPage.Library:
-                            library.SetActive(true);
-                            break;
-                    }
-
-                    Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                    dockPanel.TabClosed -= lastLibraryCloseHandler;
                 }
+
+                dockPanel.TabClosed += (lastLibraryCloseHandler = new RegionEventHandler<Transform>(closeHandler));
+
+                StartCoroutine(resizeWatch(UIPage.Library));
             }
-        }
-
-        private void disableAllPages()
-        {
-            mainMenu.SetActive(false);
-            library.SetActive(false);
-        }
-
-        private void Awake()
-        {
-            if (!instance)
+            else
             {
-                instance = this;
-            }
 
-            rectTransform = GetComponent<RectTransform>();
+                StopAllCoroutines();
+
+                GameObject newLibrary = Instantiate(library, transform);
+
+                if (lastLibraryCloseHandler != null)
+                {
+                    dockPanel.TabClosed -= lastLibraryCloseHandler;
+                }
+
+                Region libraryRegion = GetComponentsInChildren<Transform>().Where(r => r.name == "Library").First().GetComponentInParent<Region>();
+
+                libraryRegion.IsSelected = true;
+
+                libraryRegion.RemoveAt(libraryRegion.ActiveTabIndex);
+
+                newLibrary.name = "Library";
+                library = newLibrary;
+
+                libraryContent = library.GetComponentInChildren<ItemPopulation>();
+
+                library.SetActive(false);
+            }
         }
 
-        public void onLibrarySelected()
+        public void onLibraryToggle()
         {
-            page = UIPage.Library;
+            libraryEnabled = !libraryEnabled;
+            libraryToggleAct();
         }
 
         public void appendLibrary(List<Controller.MainController.LibraryItem> newitems)
@@ -87,7 +103,7 @@ namespace View
                 Controller.MainController.instance.onLibraryItemLoaded(libraryLastItems, i);
             }
 
-            onResize();
+            onResize(UIPage.Library);
         }
 
         public void populateLibrary(List<Controller.MainController.LibraryItem> items)
@@ -105,18 +121,51 @@ namespace View
             }
         }
 
+        public void libraryItemTextureReady(Texture2D picture, int index)
+        {
+            if (!libraryEnabled)
+            {
+                return;
+            }
+
+            libraryContent.lastAddedGameObjects[index].GetComponent<LibraryItemView>().updatePicture(picture);
+            libraryNumberTextured++;
+
+            if (libraryNumberTextured == libraryLastItems.Count)
+            {
+                //libraryNumberTextured = 0;
+                onResize(UIPage.Library);
+            }
+        }
+
         private void repositionLibraryPopulation(List<Controller.MainController.LibraryItem> items)
         {
             libraryContent.repositionPopulation<Controller.MainController.LibraryItem>(items, ItemPopulation.PopulationMode.Grid);
         }
 
+        //private void disableAllPages()
+        //{
+        //    mainMenu.SetActive(false);
+        //    library.SetActive(false);
+        //}
+
+        private void Awake()
+        {
+            if (!instance)
+            {
+                instance = this;
+            }
+
+            rectTransform = GetComponent<RectTransform>();
+        }
+
         private void Start()
         {
             StopAllCoroutines();
-            StartCoroutine(resizeWatch());
+            //StartCoroutine(resizeWatch());
         }
 
-        void onResize()
+        private void onResize(UIPage page)
         {
             switch (page)
             {
@@ -127,49 +176,54 @@ namespace View
                     }
                     break;
             }
+
         }
 
-        public void libraryItemTextureReady(Texture2D picture, int index)
-        {
-            libraryContent.lastAddedGameObjects[index].GetComponent<LibraryItemView>().updatePicture(picture);
-            libraryNumberTextured++;
 
-            if (libraryNumberTextured == libraryLastItems.Count)
+        IEnumerator resizeWatch(UIPage page)
+        {
+            RectTransform rectTransform = null;
+
+            switch (page)
             {
-                //libraryNumberTextured = 0;
-                onResize();
+                case UIPage.Library:
+
+                    rectTransform = library.GetComponent<RectTransform>();
+                    break;
             }
-        }
 
-        IEnumerator resizeWatch()
-        {
-            float lastWidth = rectTransform.rect.width * rectTransform.localScale.x;
-            float lastHeight = rectTransform.rect.height * rectTransform.localScale.y;
-
-            bool resize = false;
-            float since = Time.realtimeSinceStartup;
-
-            while (true)
+            if (rectTransform)
             {
-                float currentWidth = rectTransform.rect.width * rectTransform.localScale.x;
-                float currentHeight = rectTransform.rect.height * rectTransform.localScale.y;
 
-                if (currentWidth != lastWidth || currentHeight != lastHeight)
+                float lastWidth = rectTransform.rect.width * rectTransform.localScale.x;
+                float lastHeight = rectTransform.rect.height * rectTransform.localScale.y;
+
+                bool resize = false;
+                float since = Time.realtimeSinceStartup;
+
+                while (true)
                 {
-                    resize = true;
-                    since = Time.realtimeSinceStartup;
+
+                    float currentWidth = rectTransform.rect.width * rectTransform.localScale.x;
+                    float currentHeight = rectTransform.rect.height * rectTransform.localScale.y;
+
+                    if (currentWidth != lastWidth || currentHeight != lastHeight)
+                    {
+                        resize = true;
+                        since = Time.realtimeSinceStartup;
+                    }
+
+                    lastWidth = currentWidth;
+                    lastHeight = currentHeight;
+
+                    if (resize && Time.realtimeSinceStartup - since >= 0.1f)
+                    {
+                        resize = false;
+                        onResize(page);
+                    }
+
+                    yield return new WaitForSecondsRealtime(0.4f);
                 }
-
-                lastWidth = currentWidth;
-                lastHeight = currentHeight;
-
-                if (resize && Time.realtimeSinceStartup - since >= 0.1f)
-                {
-                    resize = false;
-                    onResize();
-                }
-
-                yield return new WaitForSecondsRealtime(0.4f);
             }
         }
     }

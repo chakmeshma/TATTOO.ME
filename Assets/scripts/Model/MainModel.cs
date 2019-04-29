@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 
 namespace Model
 {
-
     public class MainModel : MonoBehaviour
     {
         public static MainModel instance = null;
